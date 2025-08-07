@@ -105,6 +105,18 @@ Docker Desktop等系統管理工具
    .\Chocolatey-GUI-Installer.ps1
    ```
 
+## 程式截圖
+
+### 主介面
+![主介面截圖](img/Screenshot-1.png)
+
+程式主介面顯示各類軟體套件，已安裝的軟體會顯示綠色✓標記和版本號。
+
+### 匯出功能
+![匯出功能截圖](img/Screenshot-2.png)
+
+匯出功能可以產生標準的 packages.config 檔案，包含所有已安裝套件及其版本資訊。
+
 ## 使用流程
 
 ### 📦 安裝軟體
