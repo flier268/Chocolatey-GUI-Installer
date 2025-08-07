@@ -32,6 +32,16 @@ if (-not (Test-Administrator)) {
     }
 }
 
+# 設定執行策略以允許載入腳本
+try {
+    Write-Host "設定 PowerShell 執行策略..." -ForegroundColor Yellow
+    Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
+    Write-Host "執行策略已設定為 Bypass (限於當前處理序)" -ForegroundColor Green
+}
+catch {
+    Write-Host "警告：無法設定執行策略 - $($_.Exception.Message)" -ForegroundColor Yellow
+}
+
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
@@ -58,6 +68,7 @@ try {
 }
 catch {
     Write-Host "錯誤：無法載入 ChocolateyManager - $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "請確認 ChocolateyManager.ps1 檔案存在於相同目錄中" -ForegroundColor Red
     Read-Host "按 Enter 鍵結束"
     exit
 }
@@ -268,7 +279,6 @@ function Invoke-ChocoCommandWithUI {
     
     return $result
 }
-
 
 # 執行 Chocolatey 命令 (保留同步版本供其他功能使用)
 function Invoke-ChocoCommand {
