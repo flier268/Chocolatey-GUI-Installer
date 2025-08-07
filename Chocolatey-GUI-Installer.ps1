@@ -204,79 +204,73 @@ function Invoke-ChocoCommandWithUI {
     }
     
     try {
-        # 使用 ProcessStartInfo 來捕獲輸出
         $processInfo = New-Object System.Diagnostics.ProcessStartInfo
         $processInfo.FileName = "choco"
-        $processInfo.Arguments = $arguments  
-        $processInfo.RedirectStandardOutput = $true
-        $processInfo.RedirectStandardError = $true
-        $processInfo.UseShellExecute = $false
-        $processInfo.CreateNoWindow = $true
-        
+        $processInfo.Arguments = $arguments
+        # 根據命令判斷是否需允許 GUI 互動
+        if ($arguments -match "install" -and $arguments -notmatch "--silent|--no-progress|--force") {
+            $processInfo.UseShellExecute = $true
+            $processInfo.CreateNoWindow = $false
+        } else {
+            $processInfo.RedirectStandardOutput = $true
+            $processInfo.RedirectStandardError = $true
+            $processInfo.UseShellExecute = $false
+            $processInfo.CreateNoWindow = $true
+        }
         $process = New-Object System.Diagnostics.Process
         $process.StartInfo = $processInfo
         $process.Start()
-        
-        # 使用非阻塞方式讀取輸出，同時允許UI更新
-        $outputBuilder = New-Object System.Text.StringBuilder
-        $errorBuilder = New-Object System.Text.StringBuilder
-        
-        while (-not $process.HasExited) {
-            # 讀取標準輸出
-            if (-not $process.StandardOutput.EndOfStream) {
-                $line = $process.StandardOutput.ReadLine()
-                if ($line) {
-                    $script:LogTextBox.AppendText("  $line`r`n")
-                    $script:LogTextBox.ScrollToCaret()
-                    [void]$outputBuilder.AppendLine($line)
+        # 若可重定向則即時顯示日誌
+        if (-not $processInfo.UseShellExecute) {
+            $outputBuilder = New-Object System.Text.StringBuilder
+            $errorBuilder = New-Object System.Text.StringBuilder
+            while (-not $process.HasExited) {
+                if (-not $process.StandardOutput.EndOfStream) {
+                    $line = $process.StandardOutput.ReadLine()
+                    if ($line) {
+                        $script:LogTextBox.AppendText("  $line`r`n")
+                        $script:LogTextBox.ScrollToCaret()
+                        [void]$outputBuilder.AppendLine($line)
+                    }
                 }
-            }
-            
-            # 讀取錯誤輸出
-            if (-not $process.StandardError.EndOfStream) {
-                $errorLine = $process.StandardError.ReadLine()
-                if ($errorLine) {
-                    $script:LogTextBox.AppendText("  [錯誤] $errorLine`r`n")
-                    $script:LogTextBox.ScrollToCaret()
-                    [void]$errorBuilder.AppendLine($errorLine)
+                if (-not $process.StandardError.EndOfStream) {
+                    $errorLine = $process.StandardError.ReadLine()
+                    if ($errorLine) {
+                        $script:LogTextBox.AppendText("  [錯誤] $errorLine`r`n")
+                        $script:LogTextBox.ScrollToCaret()
+                        [void]$errorBuilder.AppendLine($errorLine)
+                    }
                 }
+                [System.Windows.Forms.Application]::DoEvents()
+                Start-Sleep -Milliseconds 100
             }
-            
-            # 允許UI更新
-            [System.Windows.Forms.Application]::DoEvents()
-            Start-Sleep -Milliseconds 100
-        }
-        
-        # 讀取剩餘的輸出
-        $remainingOutput = $process.StandardOutput.ReadToEnd()
-        if ($remainingOutput.Trim()) {
-            $script:LogTextBox.AppendText("  $remainingOutput")
+            $remainingOutput = $process.StandardOutput.ReadToEnd()
+            if ($remainingOutput.Trim()) {
+                $script:LogTextBox.AppendText("  $remainingOutput")
+                $script:LogTextBox.ScrollToCaret()
+                [void]$outputBuilder.Append($remainingOutput)
+            }
+            $remainingError = $process.StandardError.ReadToEnd()
+            if ($remainingError.Trim()) {
+                $script:LogTextBox.AppendText("  [錯誤] $remainingError")
+                $script:LogTextBox.ScrollToCaret()
+                [void]$errorBuilder.Append($remainingError)
+            }
+            $result.Output = $outputBuilder.ToString()
+            $result.Error = $errorBuilder.ToString()
+        } else {
+            $script:LogTextBox.AppendText("  [提示] 此安裝可能會跳出互動視窗，請手動操作。`r`n")
             $script:LogTextBox.ScrollToCaret()
-            [void]$outputBuilder.Append($remainingOutput)
         }
-        
-        $remainingError = $process.StandardError.ReadToEnd()  
-        if ($remainingError.Trim()) {
-            $script:LogTextBox.AppendText("  [錯誤] $remainingError")
-            $script:LogTextBox.ScrollToCaret()
-            [void]$errorBuilder.Append($remainingError)
-        }
-        
-        # 等待Process完全結束
         $process.WaitForExit()
-        
         $result.ExitCode = $process.ExitCode
         $result.Success = $process.ExitCode -eq 0
-        $result.Output = $outputBuilder.ToString()
-        $result.Error = $errorBuilder.ToString()
-        
         $process.Close()
     }
     catch {
         $result.Error = $_.Exception.Message
         $script:LogTextBox.AppendText("  [異常] $($_.Exception.Message)`r`n")
     }
-    
     return $result
 }
 
