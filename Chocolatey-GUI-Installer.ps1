@@ -37,7 +37,24 @@ Add-Type -AssemblyName System.Drawing
 
 # 載入管理器類別
 try {
-    . (Join-Path $PSScriptRoot "ChocolateyManager.ps1")
+    # 取得執行檔所在目錄 (相容於 ps2exe 編譯版本)
+    $scriptDir = if ($PSScriptRoot) { 
+        $PSScriptRoot 
+    } elseif ($MyInvocation.MyCommand.Path) { 
+        Split-Path $MyInvocation.MyCommand.Path -Parent
+    } else { 
+        Get-Location | Select-Object -ExpandProperty Path
+    }
+    
+    $managerPath = Join-Path $scriptDir "ChocolateyManager.ps1"
+    Write-Host "嘗試載入: $managerPath" -ForegroundColor Gray
+    
+    if (Test-Path $managerPath) {
+        . $managerPath
+        Write-Host "✅ ChocolateyManager 載入成功" -ForegroundColor Green
+    } else {
+        throw "找不到 ChocolateyManager.ps1 檔案: $managerPath"
+    }
 }
 catch {
     Write-Host "錯誤：無法載入 ChocolateyManager - $($_.Exception.Message)" -ForegroundColor Red

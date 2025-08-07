@@ -49,5 +49,15 @@ function Update-PackageConfig {
 }
 
 # 執行更新
-$fullPath = Join-Path $PSScriptRoot $ConfigPath
+# 取得腳本所在目錄 (相容於 ps2exe 編譯版本)
+$scriptDir = if ($PSScriptRoot) { 
+    $PSScriptRoot 
+} elseif ($MyInvocation.MyCommand.Path) { 
+    Split-Path $MyInvocation.MyCommand.Path -Parent
+} else { 
+    Get-Location | Select-Object -ExpandProperty Path
+}
+
+$fullPath = Join-Path $scriptDir $ConfigPath
+Write-Host "配置檔路徑: $fullPath" -ForegroundColor Gray
 Update-PackageConfig -Path $fullPath
