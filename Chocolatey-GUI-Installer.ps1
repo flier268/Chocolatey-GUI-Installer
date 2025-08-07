@@ -369,29 +369,171 @@ function Install-Chocolatey {
         $script:LogTextBox.AppendText("開始安裝 Chocolatey...`r`n")
         $script:LogTextBox.Refresh()
         
-        # 設定執行策略
-        Set-ExecutionPolicy RemoteSigned -Force
-        $script:LogTextBox.AppendText("設定 PowerShell 執行策略...`r`n")
+        # 先檢查是否已經安裝
+        if (Get-Command choco -ErrorAction SilentlyContinue) {
+            $script:LogTextBox.AppendText("Chocolatey 已經安裝！`r`n")
+            $script:Manager.IsInstalled = $true
+            $script:InstallChocoButton.Text = "✓ Chocolatey 已安裝"
+            $script:InstallChocoButton.Enabled = $false
+            $script:StatusLabel.Text = "狀態：Chocolatey 已安裝，可以開始選擇套件"
+            return $true
+        }
         
-        # 安裝 Chocolatey
-        Set-ExecutionPolicy Bypass -Scope Process -Force
-        [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-        Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+        # 禁用按鈕防止重複點擊
+        $script:InstallChocoButton.Enabled = $false
+        $script:InstallChocoButton.Text = "正在安裝..."
         
-        $script:LogTextBox.AppendText("Chocolatey 安裝完成！`r`n")
+        # 設定執行策略和安全協定
+        $script:LogTextBox.AppendText("配置安全性設定...`r`n")
+        [System.Windows.Forms.Application]::DoEvents()
+        
+        try {
+            # 設定執行策略
+            Set-ExecutionPolicy Bypass -Scope Process -Force -ErrorAction Stop
+            $script:LogTextBox.AppendText("✓ 執行策略已設定`r`n")
+        }
+        catch {
+            $script:LogTextBox.AppendText("警告：無法設定執行策略 - $($_.Exception.Message)`r`n")
+        }
+        
+        try {
+            # 設定 TLS 安全協定
+            [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+            $script:LogTextBox.AppendText("✓ TLS 安全協定已設定`r`n")
+        }
+        catch {
+            $script:LogTextBox.AppendText("警告：無法設定 TLS 協定 - $($_.Exception.Message)`r`n")
+        }
+        
+        [System.Windows.Forms.Application]::DoEvents()
+        
+        # 方法 1：使用 WebClient 下載安裝腳本
+        $script:LogTextBox.AppendText("正在下載 Chocolatey 安裝腳本...`r`n")
+        [System.Windows.Forms.Application]::DoEvents()
+        
+        try {
+            $webClient = New-Object System.Net.WebClient
+            $webClient.Headers.Add("User-Agent", "PowerShell")
+            $installScript = $webClient.DownloadString('https://community.chocolatey.org/install.ps1')
+            $script:LogTextBox.AppendText("✓ 安裝腳本下載成功`r`n")
+            [System.Windows.Forms.Application]::DoEvents()
+            
+            # 執行安裝腳本
+            $script:LogTextBox.AppendText("正在執行 Chocolatey 安裝...`r`n")
+            [System.Windows.Forms.Application]::DoEvents()
+            
+            Invoke-Expression $installScript
+            $script:LogTextBox.AppendText("✓ Chocolatey 安裝腳本執行完成`r`n")
+        }
+        catch {
+            $script:LogTextBox.AppendText("方法 1 失敗：$($_.Exception.Message)`r`n")
+            $script:LogTextBox.AppendText("嘗試備用安裝方法...`r`n")
+            [System.Windows.Forms.Application]::DoEvents()
+            
+            # 方法 2：使用 Invoke-RestMethod
+            try {
+                $installScript = Invoke-RestMethod -Uri 'https://community.chocolatey.org/install.ps1' -UseBasicParsing
+                $script:LogTextBox.AppendText("✓ 使用 REST 方法下載成功`r`n")
+                [System.Windows.Forms.Application]::DoEvents()
+                
+                Invoke-Expression $installScript
+                $script:LogTextBox.AppendText("✓ Chocolatey 安裝完成`r`n")
+            }
+            catch {
+                $script:LogTextBox.AppendText("方法 2 也失敗：$($_.Exception.Message)`r`n")
+                
+                # 方法 3：手動安裝
+                $script:LogTextBox.AppendText("嘗試手動安裝方法...`r`n")
+                [System.Windows.Forms.Application]::DoEvents()
+                
+                $chocoInstallPath = "$env:ALLUSERSPROFILE\chocolatey"
+                $chocoExePath = "$chocoInstallPath\bin"
+                
+                # 建立目錄
+                New-Item -Path $chocoInstallPath -ItemType Directory -Force | Out-Null
+                New-Item -Path $chocoExePath -ItemType Directory -Force | Out-Null
+                
+                # 下載 chocolatey.nupkg
+                $chocoUrl = "https://packages.chocolatey.org/chocolatey.0.12.1.nupkg"
+                $chocoNupkg = "$chocoInstallPath\chocolatey.0.12.1.nupkg"
+                
+                $webClient = New-Object System.Net.WebClient
+                $webClient.DownloadFile($chocoUrl, $chocoNupkg)
+                $script:LogTextBox.AppendText("✓ Chocolatey 套件下載完成`r`n")
+                
+                # 解壓縮
+                Add-Type -AssemblyName System.IO.Compression.FileSystem
+                [System.IO.Compression.ZipFile]::ExtractToDirectory($chocoNupkg, $chocoInstallPath)
+                $script:LogTextBox.AppendText("✓ Chocolatey 套件解壓縮完成`r`n")
+                
+                throw "請手動完成安裝或檢查網路連線"
+            }
+        }
+        
+        # 等待幾秒讓安裝完成
+        Start-Sleep -Seconds 3
         
         # 重新整理環境變數
-        $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+        $script:LogTextBox.AppendText("更新環境變數...`r`n")
+        [System.Windows.Forms.Application]::DoEvents()
         
-        $script:Manager.IsInstalled = $true
-        $script:InstallChocoButton.Text = "✓ Chocolatey 已安裝"
-        $script:InstallChocoButton.Enabled = $false
-        $script:StatusLabel.Text = "狀態：Chocolatey 已安裝，可以開始選擇套件"
+        $machinePath = [System.Environment]::GetEnvironmentVariable("Path", "Machine")
+        $userPath = [System.Environment]::GetEnvironmentVariable("Path", "User")
+        $env:Path = "$machinePath;$userPath"
         
-        return $true
+        # 手動添加 Chocolatey 路徑
+        $chocoPath = "$env:ALLUSERSPROFILE\chocolatey\bin"
+        if (Test-Path $chocoPath) {
+            $env:Path = "$env:Path;$chocoPath"
+            $script:LogTextBox.AppendText("✓ Chocolatey 路徑已添加到 PATH`r`n")
+        }
+        
+        [System.Windows.Forms.Application]::DoEvents()
+        
+        # 驗證安裝
+        $script:LogTextBox.AppendText("驗證 Chocolatey 安裝...`r`n")
+        [System.Windows.Forms.Application]::DoEvents()
+        
+        Start-Sleep -Seconds 2
+        
+        # 嘗試執行 choco 命令驗證
+        try {
+            $chocoVersion = & choco --version 2>$null
+            if ($chocoVersion) {
+                $script:LogTextBox.AppendText("✓ Chocolatey 安裝成功！版本：$chocoVersion`r`n")
+                $script:Manager.IsInstalled = $true
+                $script:InstallChocoButton.Text = "✓ Chocolatey 已安裝"
+                $script:InstallChocoButton.Enabled = $false
+                $script:StatusLabel.Text = "狀態：Chocolatey 已安裝，可以開始選擇套件"
+                return $true
+            } else {
+                throw "無法執行 choco 命令"
+            }
+        }
+        catch {
+            $script:LogTextBox.AppendText("警告：無法驗證安裝，但可能已安裝成功`r`n")
+            $script:LogTextBox.AppendText("請手動檢查或重啟程式`r`n")
+            
+            # 重新啟用按鈕
+            $script:InstallChocoButton.Enabled = $true
+            $script:InstallChocoButton.Text = "重試安裝"
+            $script:StatusLabel.Text = "狀態：Chocolatey 安裝可能未完成，請重試"
+            return $false
+        }
+        
     }
     catch {
         $script:LogTextBox.AppendText("安裝 Chocolatey 時發生錯誤：$($_.Exception.Message)`r`n")
+        $script:LogTextBox.AppendText("可能的解決方案：`r`n")
+        $script:LogTextBox.AppendText("1. 檢查網路連線`r`n")
+        $script:LogTextBox.AppendText("2. 以管理員身分執行`r`n")
+        $script:LogTextBox.AppendText("3. 檢查防火牆設定`r`n")
+        $script:LogTextBox.AppendText("4. 手動安裝：https://chocolatey.org/install`r`n")
+        
+        # 重新啟用按鈕
+        $script:InstallChocoButton.Enabled = $true
+        $script:InstallChocoButton.Text = "重試安裝"
+        $script:StatusLabel.Text = "狀態：Chocolatey 安裝失敗"
         return $false
     }
 }
