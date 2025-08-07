@@ -1,0 +1,736 @@
+﻿{
+    "packageCategories": {
+        "🍫 Chocolatey 工具": {
+            "description": "Chocolatey 套件管理相關工具",
+            "packages": [
+                {
+                    "name": "chocolateygui",
+                    "displayName": "Chocolatey GUI",
+                    "description": "Chocolatey 的官方圖形化界面"
+                },
+                {
+                    "name": "choco-upgrade-all-at",
+                    "displayName": "自動升級工具",
+                    "description": "定時自動升級所有 Chocolatey 套件"
+                },
+                {
+                    "name": "choco-cleaner",
+                    "displayName": "清理工具",
+                    "description": "清理 Chocolatey 快取和暫存檔"
+                },
+                {
+                    "name": "choco-package-list-backup",
+                    "displayName": "套件清單備份",
+                    "description": "備份已安裝的套件清單"
+                }
+            ]
+        },
+        "🌐 瀏覽器": {
+            "description": "網頁瀏覽器和相關工具",
+            "packages": [
+                {
+                    "name": "googlechrome",
+                    "displayName": "Google Chrome",
+                    "description": "Google 開發的網頁瀏覽器"
+                },
+                {
+                    "name": "firefox",
+                    "displayName": "Mozilla Firefox",
+                    "description": "開源網頁瀏覽器"
+                },
+                {
+                    "name": "floorp",
+                    "displayName": "Floorp",
+                    "description": "基於 Firefox 的隱私瀏覽器"
+                },
+                {
+                    "name": "microsoft-edge",
+                    "displayName": "Microsoft Edge",
+                    "description": "微軟的現代化瀏覽器"
+                },
+                {
+                    "name": "brave",
+                    "displayName": "Brave Browser",
+                    "description": "注重隱私和安全的瀏覽器"
+                },
+                {
+                    "name": "opera",
+                    "displayName": "Opera",
+                    "description": "功能豐富的網頁瀏覽器"
+                }
+            ]
+        },
+        "💬 通訊社交": {
+            "description": "即時通訊、社交媒體和視訊會議",
+            "packages": [
+                {
+                    "name": "discord",
+                    "displayName": "Discord",
+                    "description": "遊戲和社群語音聊天平台"
+                },
+                {
+                    "name": "telegram",
+                    "displayName": "Telegram",
+                    "description": "安全的即時通訊軟體"
+                },
+                {
+                    "name": "line",
+                    "displayName": "LINE",
+                    "description": "流行的即時通訊軟體",
+                    "installArgs": "--ignorechecksum"
+                },
+                {
+                    "name": "whatsapp",
+                    "displayName": "WhatsApp",
+                    "description": "跨平台即時通訊應用"
+                },
+                {
+                    "name": "zoom",
+                    "displayName": "Zoom",
+                    "description": "視訊會議和網路研討會平台"
+                },
+                {
+                    "name": "teams",
+                    "displayName": "Microsoft Teams",
+                    "description": "企業協作和視訊會議平台"
+                },
+                {
+                    "name": "slack",
+                    "displayName": "Slack",
+                    "description": "團隊協作和通訊平台"
+                }
+            ]
+        },
+        "🎵 多媒體": {
+            "description": "音樂、影片播放器和多媒體工具",
+            "packages": [
+                {
+                    "name": "spotify",
+                    "displayName": "Spotify",
+                    "description": "音樂串流服務"
+                },
+                {
+                    "name": "vlc",
+                    "displayName": "VLC Media Player",
+                    "description": "萬能多媒體播放器"
+                },
+                {
+                    "name": "mpc-hc-clsid2",
+                    "displayName": "MPC-HC",
+                    "description": "輕量級媒體播放器"
+                },
+                {
+                    "name": "potplayer",
+                    "displayName": "PotPlayer",
+                    "description": "功能強大的媒體播放器"
+                },
+                {
+                    "name": "audacity",
+                    "displayName": "Audacity",
+                    "description": "免費的音頻編輯軟體"
+                },
+                {
+                    "name": "handbrake",
+                    "displayName": "HandBrake",
+                    "description": "開源影片轉檔工具"
+                },
+                {
+                    "name": "obs-studio",
+                    "displayName": "OBS Studio",
+                    "description": "免費的錄影和直播軟體"
+                },
+                {
+                    "name": "screentogif",
+                    "displayName": "ScreenToGif",
+                    "description": "螢幕錄製轉 GIF 工具"
+                }
+            ]
+        },
+        "🗂️ 檔案管理": {
+            "description": "檔案管理、壓縮和同步工具",
+            "packages": [
+                {
+                    "name": "7zip",
+                    "displayName": "7-Zip",
+                    "description": "免費的檔案壓縮軟體"
+                },
+                {
+                    "name": "nanazip",
+                    "displayName": "NanaZip",
+                    "description": "現代化的 7-Zip 替代品"
+                },
+                {
+                    "name": "winrar",
+                    "displayName": "WinRAR",
+                    "description": "經典的壓縮軟體"
+                },
+                {
+                    "name": "everything",
+                    "displayName": "Everything",
+                    "description": "快速檔案搜尋工具"
+                },
+                {
+                    "name": "totalcommander",
+                    "displayName": "Total Commander",
+                    "description": "功能強大的檔案管理器"
+                },
+                {
+                    "name": "filezilla",
+                    "displayName": "FileZilla",
+                    "description": "免費 FTP 客戶端"
+                },
+                {
+                    "name": "googledrive",
+                    "displayName": "Google Drive",
+                    "description": "Google 雲端硬碟同步工具"
+                },
+                {
+                    "name": "dropbox",
+                    "displayName": "Dropbox",
+                    "description": "雲端檔案同步和分享"
+                },
+                {
+                    "name": "synctrayzor",
+                    "displayName": "SyncTrayzor",
+                    "description": "Syncthing 的 Windows GUI"
+                }
+            ]
+        },
+        "✏️ 文書處理": {
+            "description": "文字編輯、辦公軟體和筆記工具",
+            "packages": [
+                {
+                    "name": "notepadplusplus",
+                    "displayName": "Notepad++",
+                    "description": "功能強大的文字編輯器"
+                },
+                {
+                    "name": "office365business",
+                    "displayName": "Microsoft 365",
+                    "description": "微軟辦公軟體套件"
+                },
+                {
+                    "name": "libreoffice-fresh",
+                    "displayName": "LibreOffice",
+                    "description": "免費的辦公軟體套件"
+                },
+                {
+                    "name": "adobereader",
+                    "displayName": "Adobe Acrobat Reader",
+                    "description": "PDF 閱讀器"
+                },
+                {
+                    "name": "sumatrapdf",
+                    "displayName": "SumatraPDF",
+                    "description": "輕量級 PDF 閱讀器"
+                },
+                {
+                    "name": "notion",
+                    "displayName": "Notion",
+                    "description": "一體化工作空間"
+                },
+                {
+                    "name": "obsidian",
+                    "displayName": "Obsidian",
+                    "description": "知識管理和筆記工具"
+                },
+                {
+                    "name": "joplin",
+                    "displayName": "Joplin",
+                    "description": "開源筆記和待辦事項應用"
+                },
+                {
+                    "name": "typora",
+                    "displayName": "Typora",
+                    "description": "簡潔的 Markdown 編輯器"
+                }
+            ]
+        },
+        "🎨 圖像設計": {
+            "description": "圖像編輯、設計和創作工具",
+            "packages": [
+                {
+                    "name": "paint.net",
+                    "displayName": "Paint.NET",
+                    "description": "功能豐富的圖像編輯軟體"
+                },
+                {
+                    "name": "gimp",
+                    "displayName": "GIMP",
+                    "description": "免費的專業圖像編輯軟體"
+                },
+                {
+                    "name": "inkscape",
+                    "displayName": "Inkscape",
+                    "description": "免費的向量圖形編輯器"
+                },
+                {
+                    "name": "blender",
+                    "displayName": "Blender",
+                    "description": "3D 建模和動畫軟體"
+                },
+                {
+                    "name": "figma",
+                    "displayName": "Figma",
+                    "description": "協作式介面設計工具"
+                },
+                {
+                    "name": "canva",
+                    "displayName": "Canva",
+                    "description": "線上圖形設計平台"
+                },
+                {
+                    "name": "caesium.install",
+                    "displayName": "Caesium",
+                    "description": "圖片無損壓縮工具"
+                },
+                {
+                    "name": "irfanview",
+                    "displayName": "IrfanView",
+                    "description": "快速圖片檢視和編輯器"
+                }
+            ]
+        },
+        "👨‍💻 程式開發": {
+            "description": "軟體開發工具和程式語言環境",
+            "packages": [
+                {
+                    "name": "vscode",
+                    "displayName": "Visual Studio Code",
+                    "description": "輕量級程式碼編輯器"
+                },
+                {
+                    "name": "visualstudio2022community",
+                    "displayName": "Visual Studio 2022 Community",
+                    "description": "微軟整合開發環境"
+                },
+                {
+                    "name": "git",
+                    "displayName": "Git",
+                    "description": "分散式版本控制系統"
+                },
+                {
+                    "name": "github-desktop",
+                    "displayName": "GitHub Desktop",
+                    "description": "GitHub 的桌面客戶端"
+                },
+                {
+                    "name": "sourcetree",
+                    "displayName": "SourceTree",
+                    "description": "Git 的圖形化界面工具"
+                },
+                {
+                    "name": "nodejs-lts",
+                    "displayName": "Node.js LTS",
+                    "description": "JavaScript 運行環境",
+                    "postInstall": [
+                        {
+                            "command": "npm install -g @angular/cli",
+                            "description": "安裝 Angular CLI"
+                        },
+                        {
+                            "command": "npm install -g vue-cli",
+                            "description": "安裝 Vue CLI"
+                        }
+                    ]
+                },
+                {
+                    "name": "python",
+                    "displayName": "Python",
+                    "description": "Python 程式語言環境"
+                },
+                {
+                    "name": "openjdk",
+                    "displayName": "OpenJDK",
+                    "description": "開源 Java 開發工具包"
+                },
+                {
+                    "name": "golang",
+                    "displayName": "Go 語言",
+                    "description": "Google 開發的程式語言"
+                },
+                {
+                    "name": "rustup.install",
+                    "displayName": "Rust",
+                    "description": "系統程式語言 Rust"
+                }
+            ]
+        },
+        "🗄️ 資料庫工具": {
+            "description": "資料庫管理和開發工具",
+            "packages": [
+                {
+                    "name": "mysql",
+                    "displayName": "MySQL",
+                    "description": "開源關聯式資料庫"
+                },
+                {
+                    "name": "postgresql",
+                    "displayName": "PostgreSQL",
+                    "description": "先進的開源資料庫"
+                },
+                {
+                    "name": "mongodb",
+                    "displayName": "MongoDB",
+                    "description": "NoSQL 文件資料庫"
+                },
+                {
+                    "name": "redis",
+                    "displayName": "Redis",
+                    "description": "記憶體內資料結構存儲"
+                },
+                {
+                    "name": "sqlitestudio",
+                    "displayName": "SQLite Studio",
+                    "description": "SQLite 資料庫管理工具"
+                },
+                {
+                    "name": "dbeaver",
+                    "displayName": "DBeaver",
+                    "description": "通用資料庫工具"
+                },
+                {
+                    "name": "heidisql",
+                    "displayName": "HeidiSQL",
+                    "description": "MySQL、PostgreSQL 和 MSSQL 客戶端"
+                }
+            ]
+        },
+        "🔧 開發者工具": {
+            "description": "開發輔助工具和IDE擴展",
+            "packages": [
+                {
+                    "name": "jetbrainstoolbox",
+                    "displayName": "JetBrains Toolbox",
+                    "description": "JetBrains IDE 管理工具"
+                },
+                {
+                    "name": "intellijidea-community",
+                    "displayName": "IntelliJ IDEA Community",
+                    "description": "Java 開發 IDE"
+                },
+                {
+                    "name": "pycharm-community",
+                    "displayName": "PyCharm Community",
+                    "description": "Python 開發 IDE"
+                },
+                {
+                    "name": "androidstudio",
+                    "displayName": "Android Studio",
+                    "description": "Android 應用開發 IDE"
+                },
+                {
+                    "name": "postman",
+                    "displayName": "Postman",
+                    "description": "API 開發和測試工具"
+                },
+                {
+                    "name": "insomnia-rest-api-client",
+                    "displayName": "Insomnia",
+                    "description": "REST API 客戶端"
+                },
+                {
+                    "name": "fiddler",
+                    "displayName": "Fiddler",
+                    "description": "網路除錯代理工具"
+                },
+                {
+                    "name": "wireshark",
+                    "displayName": "Wireshark",
+                    "description": "網路封包分析工具"
+                }
+            ]
+        },
+        "🐳 容器化工具": {
+            "description": "容器化和虛擬化工具",
+            "packages": [
+                {
+                    "name": "docker-desktop",
+                    "displayName": "Docker Desktop",
+                    "description": "容器化平台"
+                },
+                {
+                    "name": "kubernetes-cli",
+                    "displayName": "kubectl",
+                    "description": "Kubernetes 命令列工具"
+                },
+                {
+                    "name": "minikube",
+                    "displayName": "Minikube",
+                    "description": "本地 Kubernetes 叢集"
+                },
+                {
+                    "name": "vagrant",
+                    "displayName": "Vagrant",
+                    "description": "開發環境建構工具"
+                },
+                {
+                    "name": "virtualbox",
+                    "displayName": "VirtualBox",
+                    "description": "免費虛擬機軟體"
+                },
+                {
+                    "name": "vmwareworkstation",
+                    "displayName": "VMware Workstation",
+                    "description": "專業虛擬機軟體"
+                }
+            ]
+        },
+        "🛡️ 安全隱私": {
+            "description": "安全工具、VPN 和隱私保護",
+            "packages": [
+                {
+                    "name": "bitwarden",
+                    "displayName": "Bitwarden",
+                    "description": "開源密碼管理器"
+                },
+                {
+                    "name": "1password",
+                    "displayName": "1Password",
+                    "description": "密碼管理和安全工具"
+                },
+                {
+                    "name": "keepass",
+                    "displayName": "KeePass",
+                    "description": "免費的密碼管理器"
+                },
+                {
+                    "name": "nordvpn",
+                    "displayName": "NordVPN",
+                    "description": "VPN 服務客戶端"
+                },
+                {
+                    "name": "wireguard",
+                    "displayName": "WireGuard",
+                    "description": "現代化 VPN 解決方案"
+                },
+                {
+                    "name": "openvpn",
+                    "displayName": "OpenVPN",
+                    "description": "開源 VPN 解決方案"
+                },
+                {
+                    "name": "malwarebytes",
+                    "displayName": "Malwarebytes",
+                    "description": "惡意軟體防護工具"
+                },
+                {
+                    "name": "ccleaner",
+                    "displayName": "CCleaner",
+                    "description": "系統清理和優化工具"
+                }
+            ]
+        },
+        "🎮 遊戲平台": {
+            "description": "遊戲平台和遊戲工具",
+            "packages": [
+                {
+                    "name": "steam",
+                    "displayName": "Steam",
+                    "description": "遊戲平台和商店"
+                },
+                {
+                    "name": "epicgameslauncher",
+                    "displayName": "Epic Games Launcher",
+                    "description": "Epic Games 遊戲平台"
+                },
+                {
+                    "name": "origin",
+                    "displayName": "EA Origin",
+                    "description": "EA 遊戲平台"
+                },
+                {
+                    "name": "uplay",
+                    "displayName": "Ubisoft Connect",
+                    "description": "Ubisoft 遊戲平台"
+                },
+                {
+                    "name": "battle.net",
+                    "displayName": "Battle.net",
+                    "description": "暴雪遊戲平台"
+                },
+                {
+                    "name": "gog-galaxy",
+                    "displayName": "GOG Galaxy",
+                    "description": "GOG 遊戲平台"
+                }
+            ]
+        },
+        "⚡ 系統工具": {
+            "description": "系統維護、優化和監控工具",
+            "packages": [
+                {
+                    "name": "crystaldiskinfo",
+                    "displayName": "CrystalDiskInfo",
+                    "description": "硬碟健康狀態監控工具"
+                },
+                {
+                    "name": "crystaldiskmark",
+                    "displayName": "CrystalDiskMark",
+                    "description": "硬碟效能測試工具"
+                },
+                {
+                    "name": "hwinfo",
+                    "displayName": "HWiNFO",
+                    "description": "硬體資訊和監控工具"
+                },
+                {
+                    "name": "cpu-z",
+                    "displayName": "CPU-Z",
+                    "description": "處理器和系統資訊工具"
+                },
+                {
+                    "name": "gpu-z",
+                    "displayName": "GPU-Z",
+                    "description": "顯示卡資訊工具"
+                },
+                {
+                    "name": "autoruns",
+                    "displayName": "Autoruns",
+                    "description": "Windows 開機程式管理工具"
+                },
+                {
+                    "name": "procexp",
+                    "displayName": "Process Explorer",
+                    "description": "進階工作管理員"
+                },
+                {
+                    "name": "treesizefree",
+                    "displayName": "TreeSize Free",
+                    "description": "磁碟使用量分析工具"
+                },
+                {
+                    "name": "windirstat",
+                    "displayName": "WinDirStat",
+                    "description": "磁碟使用情況統計"
+                },
+                {
+                    "name": "revo-uninstaller",
+                    "displayName": "Revo Uninstaller",
+                    "description": "強力軟體移除工具"
+                }
+            ]
+        },
+        "🔗 遠端連線": {
+            "description": "遠端桌面和連線工具",
+            "packages": [
+                {
+                    "name": "teamviewer",
+                    "displayName": "TeamViewer",
+                    "description": "遠端桌面和支援軟體"
+                },
+                {
+                    "name": "anydesk.install",
+                    "displayName": "AnyDesk",
+                    "description": "快速遠端桌面軟體"
+                },
+                {
+                    "name": "rustdesk",
+                    "displayName": "RustDesk",
+                    "description": "開源遠端桌面軟體"
+                },
+                {
+                    "name": "chrome-remote-desktop-host",
+                    "displayName": "Chrome 遠端桌面",
+                    "description": "Google 遠端桌面服務"
+                },
+                {
+                    "name": "mremoteng",
+                    "displayName": "mRemoteNG",
+                    "description": "多協議遠端連線管理工具"
+                },
+                {
+                    "name": "putty",
+                    "displayName": "PuTTY",
+                    "description": "SSH 和 Telnet 客戶端"
+                },
+                {
+                    "name": "winscp",
+                    "displayName": "WinSCP",
+                    "description": "SFTP 和 SCP 客戶端"
+                }
+            ]
+        },
+        "🧰 實用工具": {
+            "description": "日常使用的實用小工具",
+            "packages": [
+                {
+                    "name": "deskpins",
+                    "displayName": "DeskPins",
+                    "description": "將任何視窗置頂顯示"
+                },
+                {
+                    "name": "ditto",
+                    "displayName": "Ditto",
+                    "description": "增強型剪貼簿管理工具"
+                },
+                {
+                    "name": "winmerge",
+                    "displayName": "WinMerge",
+                    "description": "檔案和資料夾比較工具"
+                },
+                {
+                    "name": "ant-renamer",
+                    "displayName": "Ant Renamer",
+                    "description": "批次檔案重新命名工具"
+                },
+                {
+                    "name": "bulkrenameutility",
+                    "displayName": "Bulk Rename Utility",
+                    "description": "強大的批次重新命名工具"
+                },
+                {
+                    "name": "qbittorrent",
+                    "displayName": "qBittorrent",
+                    "description": "開源 BitTorrent 客戶端"
+                },
+                {
+                    "name": "rufus",
+                    "displayName": "Rufus",
+                    "description": "USB 開機磁碟建立工具"
+                },
+                {
+                    "name": "balenaetcher",
+                    "displayName": "balenaEtcher",
+                    "description": "USB 和 SD 卡映像燒錄工具"
+                }
+            ]
+        },
+        "🔄 運行庫": {
+            "description": "系統運行庫和框架",
+            "packages": [
+                {
+                    "name": "vcredist-all",
+                    "displayName": "Visual C++ 運行庫",
+                    "description": "Microsoft Visual C++ 運行庫套件"
+                },
+                {
+                    "name": "dotnet",
+                    "displayName": ".NET Runtime",
+                    "description": "Microsoft .NET 運行環境"
+                },
+                {
+                    "name": "dotnet-sdk",
+                    "displayName": ".NET SDK",
+                    "description": "Microsoft .NET 開發工具包"
+                },
+                {
+                    "name": "directx",
+                    "displayName": "DirectX",
+                    "description": "微軟 DirectX 多媒體 API"
+                },
+                {
+                    "name": "openal",
+                    "displayName": "OpenAL",
+                    "description": "跨平台 3D 音頻 API"
+                }
+            ]
+        }
+    },
+    "settings": {
+        "version": "2.0",
+        "defaultChocolateyArgs": "-y",
+        "refreshEnvAfterInstall": true,
+        "showPackageDescriptions": true
+    }
+}
