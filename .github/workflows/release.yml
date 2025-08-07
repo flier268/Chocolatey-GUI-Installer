@@ -24,202 +24,204 @@ jobs:
     runs-on: windows-latest
     
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Install ps2exe module
-      shell: pwsh
-      run: |
-        Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
-        Install-Module -Name ps2exe -Force -Scope CurrentUser -AllowClobber
-        Import-Module ps2exe
-        Get-Command ps2exe
-      
-    - name: Create directories
-      shell: pwsh
-      run: |
-        New-Item -ItemType Directory -Path "build" -Force
-        New-Item -ItemType Directory -Path "scripts-only" -Force
-        New-Item -ItemType Directory -Path "executables-only" -Force
-      
-    - name: Copy files to build directory
-      shell: pwsh
-      run: |
-        Copy-Item "*.ps1" -Destination "build/" -ErrorAction SilentlyContinue
-        Copy-Item "*.json" -Destination "build/" -ErrorAction SilentlyContinue
-        Copy-Item "*.md" -Destination "build/" -ErrorAction SilentlyContinue
-        if (Test-Path "LICENSE") { Copy-Item "LICENSE" -Destination "build/" }
-        Get-ChildItem -Path "build/"
+      - name: Checkout code
+        uses: actions/checkout@v4
         
-    - name: Build executables
-      shell: pwsh
-      run: |
-        $ErrorActionPreference = "Stop"
+      - name: Install ps2exe module
+        shell: pwsh
+        run: |
+          Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
+          Install-Module -Name ps2exe -Force -Scope CurrentUser -AllowClobber
+          Import-Module ps2exe
+          Get-Command ps2exe
         
-        # Build Chocolatey GUI Installer (includes ChocolateyManager dependency)
-        if (Test-Path "Chocolatey-GUI-Installer.ps1") {
-          Write-Host "Building Chocolatey-GUI-Installer.exe..."
+      - name: Create directories
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path "build" -Force
+          New-Item -ItemType Directory -Path "scripts-only" -Force
+          New-Item -ItemType Directory -Path "executables-only" -Force
+        
+      - name: Copy files to build directory
+        shell: pwsh
+        run: |
+          Copy-Item "*.ps1" -Destination "build/" -ErrorAction SilentlyContinue
+          Copy-Item "*.json" -Destination "build/" -ErrorAction SilentlyContinue
+          Copy-Item "*.md" -Destination "build/" -ErrorAction SilentlyContinue
+          if (Test-Path "LICENSE") { Copy-Item "LICENSE" -Destination "build/" }
+          Get-ChildItem -Path "build/"
           
-          # Ensure ChocolateyManager dependency is available
-          if (Test-Path "ChocolateyManager.ps1") {
-            Copy-Item "ChocolateyManager.ps1" -Destination "build/" -ErrorAction SilentlyContinue
-            Write-Host "  Copied dependency: ChocolateyManager.ps1"
+      - name: Build executables
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          
+          # Build Chocolatey GUI Installer (includes ChocolateyManager dependency)
+          if (Test-Path "Chocolatey-GUI-Installer.ps1") {
+            Write-Host "Building Chocolatey-GUI-Installer.exe..."
+            
+            # Ensure ChocolateyManager dependency is available
+            if (Test-Path "ChocolateyManager.ps1") {
+              Copy-Item "ChocolateyManager.ps1" -Destination "build/" -ErrorAction SilentlyContinue
+              Write-Host "  Copied dependency: ChocolateyManager.ps1"
+            }
+            
+            $ps2exeParams = @{
+              inputFile = "Chocolatey-GUI-Installer.ps1"
+              outputFile = "build/Chocolatey-GUI-Installer.exe"
+              title = "Chocolatey GUI Installer"
+              description = "主要 GUI 安裝程式 (包含 ChocolateyManager 依賴)"
+              company = "OpenSource"
+              product = "Chocolatey GUI Installer"
+              copyright = "Copyright (c) $((Get-Date).Year)"
+              version = "1.0.0.0"
+              requireAdmin = $true
+              STA = $true
+              supportOS = $true
+              longPaths = $true
+            }
+            Invoke-ps2exe @ps2exeParams
           }
           
-          $ps2exeParams = @{
-            inputFile = "Chocolatey-GUI-Installer.ps1"
-            outputFile = "build/Chocolatey-GUI-Installer.exe"
-            title = "Chocolatey GUI Installer"
-            description = "主要 GUI 安裝程式 (包含 ChocolateyManager 依賴)"
-            company = "OpenSource"
-            product = "Chocolatey GUI Installer"
-            copyright = "Copyright (c) $((Get-Date).Year)"
-            version = "1.0.0.0"
-            requireAdmin = $true
-            STA = $true
-            supportOS = $true
-            longPaths = $true
+          # Build Update-PackageConfig (standalone tool)
+          if (Test-Path "Update-PackageConfig.ps1") {
+            Write-Host "Building Update-PackageConfig.exe..."
+            $ps2exeParams = @{
+              inputFile = "Update-PackageConfig.ps1"
+              outputFile = "build/Update-PackageConfig.exe"
+              title = "Package Config Updater"
+              description = "獨立的配置更新工具"
+              company = "OpenSource"
+              product = "Package Config Updater"
+              copyright = "Copyright (c) $((Get-Date).Year)"
+              version = "1.0.0.0"
+              STA = $true
+              supportOS = $true
+              longPaths = $true
+            }
+            Invoke-ps2exe @ps2exeParams
           }
-          Invoke-ps2exe @ps2exeParams
-        }
-        
-        # Build Update-PackageConfig (standalone tool)
-        if (Test-Path "Update-PackageConfig.ps1") {
-          Write-Host "Building Update-PackageConfig.exe..."
-          $ps2exeParams = @{
-            inputFile = "Update-PackageConfig.ps1"
-            outputFile = "build/Update-PackageConfig.exe"
-            title = "Package Config Updater"
-            description = "獨立的配置更新工具"
-            company = "OpenSource"
-            product = "Package Config Updater"
-            copyright = "Copyright (c) $((Get-Date).Year)"
-            version = "1.0.0.0"
-            STA = $true
-            supportOS = $true
-            longPaths = $true
+          
+          Write-Host "Build completed. Executables created:"
+          Get-ChildItem -Path "build/" -Filter "*.exe" | ForEach-Object { 
+            $size = [math]::Round($_.Length / 1KB, 1)
+            Write-Host "  $($_.Name) - $size KB" 
           }
-          Invoke-ps2exe @ps2exeParams
-        }
-        
-        Write-Host "Build completed. Executables created:"
-        Get-ChildItem -Path "build/" -Filter "*.exe" | ForEach-Object { 
-          $size = [math]::Round($_.Length / 1KB, 1)
-          Write-Host "  $($_.Name) - $size KB" 
-        }
-        
-    - name: Prepare release packages
-      shell: pwsh
-      run: |
-        # Copy files for scripts-only package
-        Copy-Item "*.ps1" -Destination "scripts-only/" -ErrorAction SilentlyContinue
-        Copy-Item "*.json" -Destination "scripts-only/" -ErrorAction SilentlyContinue
-        Copy-Item "*.md" -Destination "scripts-only/" -ErrorAction SilentlyContinue
-        if (Test-Path "LICENSE") { Copy-Item "LICENSE" -Destination "scripts-only/" }
-        
-        # Copy files for executables-only package
-        Copy-Item "build/*.exe" -Destination "executables-only/" -ErrorAction SilentlyContinue
-        # Copy ChocolateyManager.ps1 dependency for main installer
-        Copy-Item "build/ChocolateyManager.ps1" -Destination "executables-only/" -ErrorAction SilentlyContinue
-        Copy-Item "*.json" -Destination "executables-only/" -ErrorAction SilentlyContinue
-        Copy-Item "README.md" -Destination "executables-only/" -ErrorAction SilentlyContinue
-        Copy-Item "使用說明.md" -Destination "executables-only/" -ErrorAction SilentlyContinue
-        
-        # Create zip files
-        Compress-Archive -Path "build/*" -DestinationPath "chocolatey-gui-installer-complete.zip" -Force
-        Compress-Archive -Path "scripts-only/*" -DestinationPath "chocolatey-gui-installer-scripts.zip" -Force  
-        Compress-Archive -Path "executables-only/*" -DestinationPath "chocolatey-gui-installer-executables.zip" -Force
-        
-        Write-Host "Release packages created:"
-        Get-ChildItem -Path "." -Filter "*.zip" | ForEach-Object { Write-Host "  $($_.Name) ($([math]::Round($_.Length/1MB, 2)) MB)" }
-        
-    - name: Get release tag
-      id: get_tag
-      shell: pwsh
-      run: |
-        if ("${{ github.event.inputs.release_tag }}" -ne "") {
-          $tag = "${{ github.event.inputs.release_tag }}"
-        } else {
-          $tag = "${{ github.ref_name }}"
-        }
-        echo "tag=$tag" >> $env:GITHUB_OUTPUT
-        Write-Host "Release tag: $tag"
-        
-    - name: Generate release notes
-      id: release_notes
-      shell: pwsh
-      run: |
-        $version = "${{ steps.get_tag.outputs.tag }}"
-        $releaseNotes = @"
-# Chocolatey GUI Installer $version
-
-## 📦 下載檔案
-
-### 🔧 完整套件 - chocolatey-gui-installer-complete.zip
-包含所有 PowerShell 腳本、編譯後的執行檔和說明文件
-
-### 📝 PowerShell 腳本套件 - chocolatey-gui-installer-scripts.zip
-- **Chocolatey-GUI-Installer.ps1** - 主要安裝程式 (需管理員權限)
-- **ChocolateyManager.ps1** - 套件管理器依賴檔案
-- **Update-PackageConfig.ps1** - 配置更新工具
-- **packages-config.json** - 套件配置檔
-- 說明文件
-
-### ⚡ 執行檔套件 - chocolatey-gui-installer-executables.zip  
-- **Chocolatey-GUI-Installer.exe** - 主要安裝程式 (需管理員權限，包含套件管理功能)
-- **ChocolateyManager.ps1** - 依賴檔案 (GUI 安裝程式需要)
-- **Update-PackageConfig.exe** - 配置更新工具
-- 配置檔和說明文件
-
-## 🚀 使用方式
-
-### PowerShell 腳本版本
-1. 下載並解壓縮 `+"chocolatey-gui-installer-scripts.zip`"+
-2. 右鍵點選 PowerShell，選擇「以系統管理員身分執行」
-3. 切換到解壓縮的資料夾
-4. 執行：`+".\Chocolatey-GUI-Installer.ps1`"+
-
-### 執行檔版本 (推薦)
-1. 下載並解壓縮 `+"chocolatey-gui-installer-executables.zip`"+
-2. 右鍵點選 `+"Chocolatey-GUI-Installer.exe`"+
-3. 選擇「以系統管理員身分執行」
-
-## ✅ 系統需求
-- Windows 10 或更新版本
-- 管理員權限 (安裝軟體時必需)
-- 網際網路連線
-
-## 🎯 主要功能
-- ✨ 友善的圖形化介面
-- 🔧 一鍵安裝 Chocolatey
-- 📦 批次安裝常用軟體套件
-- ⚙️ 套件配置管理
-- 🌏 繁體中文介面
-"@
-
-        $releaseNotes | Out-File -FilePath "release_notes.md" -Encoding utf8NoBOM
-        echo "notes_file=release_notes.md" >> $env:GITHUB_OUTPUT
-        
-    - name: Create GitHub Release
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: ${{ steps.get_tag.outputs.tag }}
-        name: "Chocolatey GUI Installer ${{ steps.get_tag.outputs.tag }}"
-        body_path: release_notes.md
-        prerelease: ${{ github.event.inputs.pre_release || false }}
-        files: |
-          chocolatey-gui-installer-complete.zip
-          chocolatey-gui-installer-scripts.zip
-          chocolatey-gui-installer-executables.zip
-        draft: false
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: chocolatey-gui-installer-${{ steps.get_tag.outputs.tag }}
-        path: |
-          build/
-          *.zip
-        retention-days: 90
+          
+      - name: Prepare release packages
+        shell: pwsh
+        run: |
+          # Copy files for scripts-only package
+          Copy-Item "*.ps1" -Destination "scripts-only/" -ErrorAction SilentlyContinue
+          Copy-Item "*.json" -Destination "scripts-only/" -ErrorAction SilentlyContinue
+          Copy-Item "*.md" -Destination "scripts-only/" -ErrorAction SilentlyContinue
+          if (Test-Path "LICENSE") { Copy-Item "LICENSE" -Destination "scripts-only/" }
+          
+          # Copy files for executables-only package
+          Copy-Item "build/*.exe" -Destination "executables-only/" -ErrorAction SilentlyContinue
+          # Copy ChocolateyManager.ps1 dependency for main installer
+          Copy-Item "build/ChocolateyManager.ps1" -Destination "executables-only/" -ErrorAction SilentlyContinue
+          Copy-Item "*.json" -Destination "executables-only/" -ErrorAction SilentlyContinue
+          Copy-Item "README.md" -Destination "executables-only/" -ErrorAction SilentlyContinue
+          Copy-Item "使用說明.md" -Destination "executables-only/" -ErrorAction SilentlyContinue
+          
+          # Create zip files
+          Compress-Archive -Path "build/*" -DestinationPath "chocolatey-gui-installer-complete.zip" -Force
+          Compress-Archive -Path "scripts-only/*" -DestinationPath "chocolatey-gui-installer-scripts.zip" -Force  
+          Compress-Archive -Path "executables-only/*" -DestinationPath "chocolatey-gui-installer-executables.zip" -Force
+          
+          Write-Host "Release packages created:"
+          Get-ChildItem -Path "." -Filter "*.zip" | ForEach-Object { 
+            Write-Host "  $($_.Name) ($([math]::Round($_.Length/1MB, 2)) MB)" 
+          }
+          
+      - name: Get release tag
+        id: get_tag
+        shell: pwsh
+        run: |
+          if ("${{ github.event.inputs.release_tag }}" -ne "") {
+            $tag = "${{ github.event.inputs.release_tag }}"
+          } else {
+            $tag = "${{ github.ref_name }}"
+          }
+          echo "tag=$tag" >> $env:GITHUB_OUTPUT
+          Write-Host "Release tag: $tag"
+          
+      - name: Generate release notes
+        id: release_notes
+        shell: pwsh
+        run: |
+          $version = "${{ steps.get_tag.outputs.tag }}"
+          $releaseNotes = @"
+          # Chocolatey GUI Installer $version
+          
+          ## 📦 下載檔案
+          
+          ### 🔧 完整套件 - chocolatey-gui-installer-complete.zip
+          包含所有 PowerShell 腳本、編譯後的執行檔和說明文件
+          
+          ### 📝 PowerShell 腳本套件 - chocolatey-gui-installer-scripts.zip
+          - **Chocolatey-GUI-Installer.ps1** - 主要安裝程式 (需管理員權限)
+          - **ChocolateyManager.ps1** - 套件管理器依賴檔案
+          - **Update-PackageConfig.ps1** - 配置更新工具
+          - **packages-config.json** - 套件配置檔
+          - 說明文件
+          
+          ### ⚡ 執行檔套件 - chocolatey-gui-installer-executables.zip  
+          - **Chocolatey-GUI-Installer.exe** - 主要安裝程式 (需管理員權限，包含套件管理功能)
+          - **ChocolateyManager.ps1** - 依賴檔案 (GUI 安裝程式需要)
+          - **Update-PackageConfig.exe** - 配置更新工具
+          - 配置檔和說明文件
+          
+          ## 🚀 使用方式
+          
+          ### PowerShell 腳本版本
+          1. 下載並解壓縮 ``chocolatey-gui-installer-scripts.zip``
+          2. 右鍵點選 PowerShell，選擇「以系統管理員身分執行」
+          3. 切換到解壓縮的資料夾
+          4. 執行：``.\Chocolatey-GUI-Installer.ps1``
+          
+          ### 執行檔版本 (推薦)
+          1. 下載並解壓縮 ``chocolatey-gui-installer-executables.zip``
+          2. 右鍵點選 ``Chocolatey-GUI-Installer.exe``
+          3. 選擇「以系統管理員身分執行」
+          
+          ## ✅ 系統需求
+          - Windows 10 或更新版本
+          - 管理員權限 (安裝軟體時必需)
+          - 網際網路連線
+          
+          ## 🎯 主要功能
+          - ✨ 友善的圖形化介面
+          - 🔧 一鍵安裝 Chocolatey
+          - 📦 批次安裝常用軟體套件
+          - ⚙️ 套件配置管理
+          - 🌏 繁體中文介面
+          "@
+          
+          $releaseNotes | Out-File -FilePath "release_notes.md" -Encoding utf8NoBOM
+          echo "notes_file=release_notes.md" >> $env:GITHUB_OUTPUT
+          
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.get_tag.outputs.tag }}
+          name: "Chocolatey GUI Installer ${{ steps.get_tag.outputs.tag }}"
+          body_path: release_notes.md
+          prerelease: ${{ github.event.inputs.pre_release || false }}
+          files: |
+            chocolatey-gui-installer-complete.zip
+            chocolatey-gui-installer-scripts.zip
+            chocolatey-gui-installer-executables.zip
+          draft: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: chocolatey-gui-installer-${{ steps.get_tag.outputs.tag }}
+          path: |
+            build/
+            *.zip
+          retention-days: 90
