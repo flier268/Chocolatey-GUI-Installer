@@ -1,174 +1,78 @@
-# Chocolatey GUI 安裝器
+# Chocolatey GUI Installer (Avalonia 版)
 
-基於原始批次檔案 `1. 一鍵安裝.bat` 開發的圖形化界面 PowerShell 腳本。
+本專案以 [Avalonia UI](https://avaloniaui.net/) 框架重寫，使用 .NET 9 並支援 AOT (Ahead-of-Time) 發布，僅支援 Windows 平台（x86 與 x64），提供現代化、直覺的套件管理圖形介面，方便用戶管理 Chocolatey 套件。
 
-## 檔案說明
+## 專案架構
 
-- `Chocolatey-GUI-Installer.ps1` - 主要的 GUI 安裝程式
-- `ChocolateyManager.ps1` - 套件管理核心模組
-- `packages-config.json` - 軟體套件配置文件
-- `packages-config-guide.md` - 配置文件說明文件
-- `Update-PackageConfig.ps1` - 配置更新工具
-- `1. 一鍵安裝.bat` - 原始批次檔案參考
+- **Avalonia UI**：Windows 桌面應用程式
+- **.NET 9 + AOT**：需安裝 .NET 9，並以 AOT 方式發布
+- **packages-config.json**：軟體套件配置檔
+- **packages-config-guide.md**：配置檔格式說明
+- **匯入/匯出**：支援標準 packages.config 格式
 
-## ✨ 功能特色
+## 主要功能
 
-### 📄 獨立配置文件
-- **JSON 配置** - 所有軟體清單移至獨立的配置文件
-- **易於維護** - 可直接編輯配置文件新增或移除軟體
-- **必要配置** - `packages-config.json` 為必需文件，確保配置的一致性
-- **完整描述** - 每個軟體都有詳細的描述說明
-- **安裝參數** - 支援自訂安裝參數
-- **後續命令** - 支援安裝後執行額外命令
+- 📦 套件分類瀏覽與管理
+- ✅ 安裝/移除/更新套件
+- 🔄 即時狀態同步
+- 📤 匯出已安裝套件清單
+- 📥 一鍵匯入並批量安裝
+- 📝 完整安裝日誌與進度顯示
+- ⚙️ 自訂安裝參數與後續命令
+- 🚀 AOT 編譯，啟動更快、效能更佳
+- 🖥️ 同時支援 Windows x86 與 x64
 
-### 🔍 智能狀態檢測
-- **自動檢測** - 啟動時自動檢查所有軟體的安裝狀態
-- **視覺提示** - 已安裝軟體顯示綠色文字和版本號
-- **即時更新** - 提供「重新整理狀態」按鈕即時檢查
-- **Chocolatey 2.5.0 支援** - 完全相容最新版本
+## 使用方式
 
-### 🗑️ 軟體移除功能
-- **選擇移除** - 可選擇已安裝的軟體進行移除
-- **安全確認** - 移除前會顯示確認對話框
-- **批量操作** - 支援同時移除多個軟體
-- **狀態同步** - 移除後自動更新顯示狀態
+### 安裝與啟動
 
-### 📤📥 匯出/匯入功能
-- **原生 Chocolatey 格式** - 使用 `choco export` 匯出標準 packages.config 格式
-- **一鍵批量安裝** - 使用 `choco install packages.config` 批量安裝所有套件
-- **完整版本資訊** - 包含套件名稱和精確版本號
-- **快速可靠** - 直接使用 Chocolatey 原生命令，執行速度更快
-- **標準相容** - 與其他 Chocolatey 工具完全相容
-- **環境遷移** - 輕鬆在不同電腦間同步軟體環境
-
-### 🔧 技術改進
-- **模組化架構** - 核心功能模組化，易於維護
-- **即時輸出** - 顯示 Chocolatey 命令的即時輸出
-- **錯誤處理** - 完善的錯誤處理和復原機制
-- **非阻塞UI** - 使用異步處理，安裝/移除期間UI保持完全響應
-- **智能進度** - 實時顯示套件處理進度和狀態
-
-## 核心功能
-
-✅ **圖形化界面** - 友善的 Windows Forms GUI
-✅ **一鍵安裝 Chocolatey** - 自動設定執行策略並安裝
-✅ **套件分類管理** - 按功能分類顯示套件
-✅ **選擇性安裝** - 可自由選擇要安裝的套件
-✅ **批量安裝/移除** - 一次處理多個套件
-✅ **進度顯示** - 即時顯示操作進度和日誌
-✅ **錯誤處理** - 完整的錯誤處理機制
-✅ **匯出/匯入** - 匯出已安裝套件清單，支援一鍵安裝
-✅ **非阻塞UI** - 安裝過程中界面保持響應
-
-## 套件分類
-
-### 🛠️ 通用工具 (預設選取)
-常用的系統工具和實用程式
-
-### 💬 通訊社交
-Discord、Telegram、Line、Spotify等
-
-### 👨‍💻 開發工具  
-Git、VS Code、GitHub Desktop等開發必備工具
-
-### 🔧 .NET 開發
-Visual Studio、JetBrains工具等.NET開發環境
-
-### 🌐 前端開發
-Node.js、Angular CLI等前端開發工具
-
-### 🗄️ 系統管理
-Docker Desktop等系統管理工具
-
-## 使用方法
-
-### 🚀 一鍵啟動（推薦）
-直接雙擊執行或在 PowerShell 中執行：
-```powershell
-.\Chocolatey-GUI-Installer.ps1
-```
-
-**腳本會自動：**
-- 檢查管理員權限
-- 如果沒有權限會自動請求提升
-- 設定適當的執行策略
-- 啟動 GUI 界面
-
-### 🔧 手動設定（如遇到問題）
-1. **以管理員身份執行 PowerShell**
-2. **設定執行策略** (如需要)：
-   ```powershell
-   Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+1. 安裝 [.NET 9](https://dotnet.microsoft.com/download)
+2. 下載本專案並執行 AOT 發布：
+   ```shell
+   dotnet publish ChocolateyGuiAvalonia/ChocolateyGuiAvalonia.csproj -c Release -r win-x64 --self-contained -p:PublishAot=true
+   dotnet publish ChocolateyGuiAvalonia/ChocolateyGuiAvalonia.csproj -c Release -r win-x86 --self-contained -p:PublishAot=true
    ```
-3. **執行腳本**：
-   ```powershell
-   .\Chocolatey-GUI-Installer.ps1
-   ```
+3. 執行產生的可執行檔（於 `bin/Release/net9.0/win-x64/publish/` 或 `bin/Release/net9.0/win-x86/publish/` 目錄）
+4. 首次啟動請確認 `packages-config.json` 已正確配置
 
-## 程式截圖
+### 主要介面
 
-### 主介面
+- 直覺式分類標籤頁
+- 每個套件顯示名稱、描述、安裝狀態、版本
+- 支援批量安裝/移除
+- 日誌區域即時顯示進度與詳細訊息
+
 ![主介面截圖](img/Screenshot-1.png)
 
-程式主介面顯示各類軟體套件，已安裝的軟體會顯示綠色✓標記和版本號。
+### 匯出/匯入功能
 
-### 匯出功能
+- 匯出已安裝套件為標準 packages.config
+- 匯入 packages.config 並一鍵安裝所有套件
+
 ![匯出功能截圖](img/Screenshot-2.png)
 
-匯出功能可以產生標準的 packages.config 檔案，包含所有已安裝套件及其版本資訊。
+### 配置檔格式
 
-## 使用流程
-
-### 📦 安裝軟體
-1. 🔐 **權限檢查** - 腳本會自動檢查並請求管理員權限
-2. 📦 **安裝 Chocolatey** - 點擊「安裝 Chocolatey」按鈕（如未安裝）
-3. 🔍 **查看狀態** - 程式自動檢查所有軟體安裝狀態
-4. ✅ **選擇套件** - 在各分類標籤頁中選擇要安裝的套件（未安裝的軟體）
-5. 🚀 **開始安裝** - 點擊「安裝選定套件」開始批量安裝
-6. 📋 **監控進度** - 在日誌區域查看安裝進度
-
-### 🗑️ 移除軟體
-1. 🔍 **查看已安裝** - 已安裝軟體會顯示綠色✓標記
-2. ✅ **選擇移除** - 勾選要移除的已安裝軟體
-3. 🗑️ **執行移除** - 點擊「移除選定套件」按鈕
-4. ⚠️ **確認操作** - 在確認對話框中點擊「是」
-5. 📋 **監控進度** - 查看移除進度和結果
-
-### 🔄 其他操作
-- **重新整理狀態** - 點擊「重新整理狀態」更新所有軟體的安裝狀態
-- **檢查Choco** - 點擊「檢查Choco」驗證Chocolatey安裝狀態
-- **全選/取消全選** - 在各分類中使用全選按鈕快速選擇
+請參考 [`packages-config-guide.md`](packages-config-guide.md) 文件。
 
 ## 系統需求
 
-- Windows 10/11
-- PowerShell 5.1 或更新版本
+- Windows 10/11（x86 或 x64）
+- .NET 9（AOT 編譯）
 - 管理員權限
 - 網路連線
 
-## 安全性
-
-- 要求管理員權限執行
-- 使用官方 Chocolatey 安裝腳本
-- 所有套件均來自 Chocolatey 官方倉庫
-- 自動設定安全的執行策略
-
 ## 故障排除
 
-### 執行策略錯誤
-```powershell
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
-```
-
-### 管理員權限
-確保以「系統管理員身分執行」PowerShell
-
-### 網路連線
-確保可以訪問 `https://community.chocolatey.org/`
+- 確認已安裝 .NET 9
+- 檢查 `packages-config.json` 格式是否正確
+- 查看日誌區域與終端輸出訊息
+- 請以管理員權限執行
 
 ## 開發資訊
 
-- 基於 Windows Forms
-- PowerShell 5.1+
-- 參考原始批次檔案功能
-- 支援中文界面
+- 使用 Avalonia UI
+- 僅支援 Windows x86/x64
+- 支援中文介面
+- 模組化架構，易於維護與擴充
+- 採用 AOT 編譯，效能最佳
